@@ -19,7 +19,7 @@ BiocManager::install("phangorn")
 BiocManager::install("DECIPHER")
 BiocManager::install("DESseq2")
 ```
-
+#gridExtra and tinytex
 ```{r}
 install.packages("gridExtra")
 install.packages('tinytex')
