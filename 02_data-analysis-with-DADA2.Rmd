@@ -1,6 +1,9 @@
 ---
 title: "Dada2 tutorial"
-output: pdf_document
+output: 
+  github_document:
+   toc: true
+   toc_depth: 2
 ---
 ```{r}
 library("dada2")

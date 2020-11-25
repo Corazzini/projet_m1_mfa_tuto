@@ -1,15 +1,25 @@
 ---
 title: 'metabarcoding with dada2: environment installation'
-output: pdf_document
+output: 
+  github_document:
+   toc: true
+   toc_depth: 2
 ---
+
+
+
 # update VM configuration
 ``` {bash}
 sudo apt-get update -y 
 sudo apt-get install -y libbz2-dev
 sudo apt-get install -y liblzma-dev
 ```
-#package install
+
+
+# package install
 Following instruction on https://benjjneb.github.io/dada2/dada-installation.html
+
+
 ```{r package install}
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
@@ -19,12 +29,16 @@ BiocManager::install("phangorn")
 BiocManager::install("DECIPHER")
 BiocManager::install("DESseq2")
 ```
-#gridExtra and tinytex
+
+
+# gridExtra and tinytex
 ```{r}
 install.packages("gridExtra")
 install.packages('tinytex')
 tinytex::install_tinytex()
 ```
+
+
 
 ```{r}
 .cran_packages <- c( "shiny","miniUI", "caret", "pls", "e1071", "ggplot2", "randomForest", "dplyr", "ggrepel", "nlme", "devtools",
@@ -34,6 +48,7 @@ tinytex::install_tinytex()
 .bioc_packages <- c("genefilter", "impute")
 ```
 
+
 ```{r}
 install.packages(.cran_packages)
 devtools::install_github(.github_packages)
@@ -41,12 +56,26 @@ BiocManager::install(.bioc_packages)
 
 ```
 
+
 ```{bash}
 wget https://cran.r-project.org/src/contrib/Archive/structSSI/structSSI_1.1.1.tar.gz
 ```
+
+
 ```{r}
 library(devtools)
 install_local("./structSSI_1.1.1.tar.gz")
 ```
 
+
+# rmarkdown
+```{r}
+install.packages("rmarkdown")
+```
+
+
+# knitr
+```{r}
+install.packages("knitr")
+```
 
