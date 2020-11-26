@@ -11,6 +11,7 @@ output:
 sudo apt-get update -y 
 sudo apt-get install -y libbz2-dev
 sudo apt-get install -y liblzma-dev
+sudo apt-get install -y libglpk-dev
 ```
 
 
@@ -26,12 +27,12 @@ BiocManager::install("dada2", version = "3.11")
 BiocManager::install("phangorn")
 BiocManager::install("DECIPHER")
 BiocManager::install("DESseq2")
+BiocManager::install("ggplot2", version = "3.11")
 ```
 
 ```{r}
 install.packages("gridExtra")
 ```
-
 
 
 ```{r}
