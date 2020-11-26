@@ -1,19 +1,12 @@
 ---
 title: "phyloseq"
-output: pdf_document
+output: 
+  github_document:
+   toc: true
+   toc_depth: 2
 ---
-# update VM configuration
-```{bash}
-sudo apt-get install -y libglpk-dev
-```
-#package install
-Following instruction on https://benjjneb.github.io/dada2/dada-installation.html
-```{r package install}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install(version = '3.11')
-BiocManager::install("ggplot2", version = "3.11")
-```
+
+# Importer dans phyloseq
 
 ```{r}
 library(phyloseq); packageVersion("phyloseq")
@@ -28,43 +21,12 @@ library(ggplot2); packageVersion("ggplot2")
 ```
 
 ```{r}
-samples.out <- rownames(seqtab.nochim)
-subject <- sapply(strsplit(samples.out, "D"), `[`, 1)
-gender <- substr(subject,1,1)
-subject <- substr(subject,2,999)
-day <- as.integer(sapply(strsplit(samples.out, "D"), `[`, 2))
-samdf <- data.frame(Subject=subject, Gender=gender, Day=day)
-samdf$When <- "Early"
-samdf$When[samdf$Day>100] <- "Late"
-rownames(samdf) <- samples.out
+theme_set(theme_bw())
 ```
 
 ```{r}
-ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
-               sample_data(samdf), 
-               tax_table(taxa))
-ps <- prune_samples(sample_names(ps) != "Mock", ps) # Remove mock sample
+load("02_data-analysis-with-DADA2_FinalEnv")
 ```
-
-```{r}
-plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
-```
-# Transform data to proportions as appropriate for Bray-Curtis distances
-```{r}
-ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
-ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
-```
-```{r}
-plot_ordination(ps.prop, ord.nmds.bray, color="When", title="Bray NMDS")
-```
-```{r}
-top20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
-ps.top20 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))
-ps.top20 <- prune_taxa(top20, ps.top20)
-plot_bar(ps.top20, x="Day", fill="Family") + facet_wrap(~When, scales="free_x")
-```
-# Show available ranks in the dataset
-
 
 
 ```{r}
@@ -83,6 +45,7 @@ rownames(samdf) <- samples.out
 ```{r}
 library(phangorn)
 library(DECIPHER)
+library(dada2)
 ```
 
 ```{r}
@@ -115,10 +78,18 @@ ps <- merge_phyloseq(ps, dna)
 taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
 ps
 ```
+## Visualisation de la diversité alpha
 
 ```{r}
 plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
 ```
+
+```{r}
+# Transform data to proportions as appropriate for Bray-Curtis distances
+ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
+ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
+```
+
 
 ```{r}
 s.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
@@ -128,17 +99,19 @@ ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance="bray")
 plot_ordination(ps.prop, ord.nmds.bray, color="When", title="Bray NMDS")
 ```
 ```{r}
-op20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
+top20 <- names(sort(taxa_sums(ps), decreasing=TRUE))[1:20]
 ps.top20 <- transform_sample_counts(ps, function(OTU) OTU/sum(OTU))
 ps.top20 <- prune_taxa(top20, ps.top20)
 plot_bar(ps.top20, x="Day", fill="Family") + facet_wrap(~When, scales="free_x")
 ```
+
+# Chargement des données
 ```{r}
 ps_connect <-url("https://raw.githubusercontent.com/spholmes/F1000_workflow/master/data/ps.rds")
 ps = readRDS(ps_connect)
 ps
 ```
-
+# Filtrage taxonomique
 
 ```{r}
 rank_names(ps)
@@ -165,18 +138,21 @@ prevdf = data.frame(Prevalence = prevdf,
 ```{r}
 plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
 ```
-# Define phyla to filter
+
 ```{r}
+# Define phyla to filter
 filterPhyla = c("Fusobacteria", "Deinococcus-Thermus")
 ```
-# Filter entries with unidentified Phylum
+
 ```{r}
+# Filter entries with unidentified Phylum
 ps1 = subset_taxa(ps, !Phylum %in% filterPhyla)
 ps1
 ```
+#Filtrage de la prévalence
 
-# Subset to the remaining phyla
 ```{r}
+# Subset to the remaining phyla
 prevdf1 = subset(prevdf, Phylum %in% get_taxa_unique(ps1, "Phylum"))
 ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(ps),color=Phylum)) +
   geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) +  geom_point(size = 2, alpha = 0.7) +
@@ -194,6 +170,8 @@ prevalenceThreshold
 keepTaxa = rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
 ps2 = prune_taxa(keepTaxa, ps)
 ```
+
+#Taxons agglomérés
 
 ```{r}
 length(get_taxa_unique(ps2, taxonomic.rank = "Genus"))
@@ -225,6 +203,7 @@ p4tree = plot_tree(ps4, method = "treeonly",
 gridExtra::grid.arrange(nrow = 1, p2tree, p3tree, p4tree)
 ```
 
+#Transformation de la valeur d'abondance
 
 ```{r}
 plot_abundance = function(physeq,title = "",
@@ -243,8 +222,10 @@ plot_abundance = function(physeq,title = "",
 }
 ```
 
-# Transform to relative abundance. Save as new object.
+
+
 ```{r}
+# Transform to relative abundance. Save as new object.
 ps3ra = transform_sample_counts(ps3, function(x){x / sum(x)})
 ```
 
@@ -255,10 +236,14 @@ plotAfter = plot_abundance(ps3ra,"")
 gridExtra::grid.arrange(nrow = 1,  plotBefore, plotAfter)
 ```
 
+#Sous-ensemble par taxonomie
+
 ```{r}
 psOrd = subset_taxa(ps3ra, Order == "Lactobacillales")
 plot_abundance(psOrd, Facet = "Genus", Color = NULL)
 ```
+## Prétraitement
+
 ```{r}
 qplot(sample_data(ps)$age, geom = "histogram",binwidth=20) + xlab("age")
 ```
@@ -284,6 +269,9 @@ rel_abund <- t(apply(otu_table(ps), 1, function(x) x / sum(x)))
 qplot(rel_abund[, 12], geom = "histogram",binwidth=0.05) +
   xlab("Relative abundance")
 ```
+ 
+# Différentes projections d'ordination
+
 ```{r}
 outliers <- c("F5D165", "F6D165", "M3D175", "M4D175", "M5D175", "M6D175")
 ps <- prune_samples(!(sample_names(ps) %in% outliers), ps)
@@ -327,7 +315,7 @@ plot_ordination(pslog, out.wuf.log, color = "age_binned",
   coord_fixed(sqrt(evals[2] / evals[1])) +
   labs(col = "Binned Age", shape = "Litter")
 ```
-
+# Pourquoi les tracés s'ordination sont-ils si éloignés de la place ?
 On va créer une nouvelle matrice représentant les abondances par leur rang : le + petit microbe dans l'échatillon 1 serra mappé 1, au 2ème rang le suivant sera mappé 2 etc
 ```{r}
 abund <- otu_table(pslog)
@@ -398,6 +386,8 @@ ggplot() +
   coord_fixed(sqrt(ranks_pca$eig[2] / ranks_pca$eig[1])) +
   theme(panel.border = element_rect(color = "#787878", fill = alpha("white", 0)))
 ```
+
+## Correspondance canonique
 Correspondance canonique (CCpnA) : est une approche de l'ordination d'une espèce par table d'enchatillon qui intègre des informations supplémentaires sur les échantillons. 
 le but du diplot: déterminer quels type de communauté bactériennes sont les plus importants dans différents types d'échantillons de souris. 
 
@@ -432,7 +422,7 @@ ggplot() +
   coord_fixed(sqrt(ps_ccpna$CCA$eig[2] / ps_ccpna$CCA$eig[1])*0.45   ) +
   theme(panel.border = element_rect(color = "#787878", fill = alpha("white", 0)))
 ```
-
+# Enseignement supervisé
 1ere étape : diviser les données en ensembles d'apprentissage et de test
 
 ```{r}
@@ -517,7 +507,7 @@ ggplot(maxImpDF) +   geom_histogram(aes(x = abund)) +
 
 # Analyse basée sur des graphique
 
-# Créer et tracer des graphique
+## Créer et tracer des graphique
 
 ```{r}
 library("phyloseqGraphTest")
@@ -540,7 +530,7 @@ ggplot(net_graph, aes(x = x, y = y, xend = xend, yend = yend), layout = "fruchte
         legend.key.height = unit(0.5,"line")) +
   guides(col = guide_legend(override.aes = list(size = .5)))
 ```
-# MST
+## MST
 ```{r}
 gt <- graph_perm_test(ps, "family_relationship", grouping = "host_subject_id",
                       distance = "jaccard", type = "mst")
@@ -553,7 +543,7 @@ plotNet1=plot_test_network(gt) + theme(legend.text = element_text(size = 8),
 plotPerm1=plot_permutations(gt)
 grid.arrange(ncol = 2,  plotNet1, plotPerm1)
 ```
-# Voisins les plus proches
+## Voisins les plus proches
 ```{r}
 gt <- graph_perm_test(ps, "family_relationship", grouping = "host_subject_id",
                       distance = "jaccard", type = "knn", knn = 1)
@@ -567,7 +557,7 @@ grid.arrange(ncol = 2,  plotNet2, plotPerm2)
 ```
 
 
-# Modélisation linéaire
+## Modélisation linéaire
 il s'agit de décrire comment une mesure unique de la structure globale de la communauté est associée aux caractéristiques de l'échantillon. 
 
 D'abord on calcule la diversité de Shannone associée à chaque echantillon et mettre une annotation d'échantillon
@@ -628,7 +618,7 @@ ggplot(ps_samp %>% left_join(new_data)) +
         axis.text.y = element_text(size = 6))
 ```
 
-# Tests mutiples hiérarchiques
+## Tests mutiples hiérarchiques
 On test cette méthode pour tester l'association entre abondance microbienne et âge.
 Transformation de stabilisation de la variance sur un objet
 
