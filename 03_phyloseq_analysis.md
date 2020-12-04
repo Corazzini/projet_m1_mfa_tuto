@@ -221,7 +221,7 @@ plot_richness(ps, x="Day", measures=c("Shannon", "Simpson"), color="When")
     ## 
     ## We recommended that you find the un-trimmed data and retry.
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Cette fonction estime un certain nombre de mesures de la diversité alpha
 à l’aide de la fonction estimate\_richness, et renvoie à un objet tracé
@@ -285,7 +285,7 @@ transformé en abondance relative et il est rangé dans l’objet ps.prop.
 plot_ordination(ps.prop, ord.nmds.bray, color="When", title="Bray NMDS")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 La fonction plot\_ordination permet de créer un graphique. Dans cette
 oridination on voit clairement une séparation entre les échantillons
@@ -299,7 +299,7 @@ ps.top20 <- prune_taxa(top20, ps.top20)
 plot_bar(ps.top20, x="Day", fill="Family") + facet_wrap(~When, scales="free_x")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 On réalise un diagramme en batonnet dans lequel on prend les 20 premiers
 séquences (10 pour les Early et 10 pour Late).
@@ -444,7 +444,7 @@ ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(ps),color=Phylum)) +
   facet_wrap(~Phylum) + theme(legend.position="none")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 On a tracé un graphique grâce à ggplot sur l’objet prevdf1. la fonction
 facer\_wrap permet de faire plusieurs graphiques. Ce graphe represente
@@ -532,7 +532,7 @@ phylogénétique (ps4).
 gridExtra::grid.arrange(nrow = 1, p2tree, p3tree, p4tree)
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 A gauche nous avonsl’arbre original, l’agglomération taxonomique au rang
 de genre au milieu, l’agglomération phylogénétque a droite avec une
@@ -581,7 +581,7 @@ plotAfter = plot_abundance(ps3ra,"")
 gridExtra::grid.arrange(nrow = 1,  plotBefore, plotAfter)
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 plotBefor corespond aux valeurs de ps3 et plotAfter correspond a ps3ra.
 En a gauche nous avons les abondances initiales et a droite les
@@ -597,7 +597,7 @@ psOrd = subset_taxa(ps3ra, Order == "Lactobacillales")
 plot_abundance(psOrd, Facet = "Genus", Color = NULL)
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 Ici nous avons les abondances relatives en ordonner et en abscisse nous
 avons le sexe pour le genre Lactobacillus et le genre Streptococcus. La
@@ -612,7 +612,7 @@ genre Streptococcus.
 qplot(sample_data(ps)$age, geom = "histogram",binwidth=20) + xlab("age")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 Ce graphe nous montre que les ages des souris qui sont répartir en
 groupes (souris jeunes, age moyen et agées). De nombreuses souris sont
@@ -624,7 +624,7 @@ qplot(log10(rowSums(otu_table(ps))),binwidth=0.2) +
   xlab("Logged counts-per-sample")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 Ce graphique prend en compte les OTU\_table de ps. A chaque ligne d’OTU
 ca fait la somme des lignes et ca le met en log de 10 (log10(rowSums()).
@@ -652,7 +652,7 @@ plot_ordination(pslog, out.wuf.log, color = "age_binned") +
   coord_fixed(sqrt(evals[2] / evals[1]))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 On créer un objet pslog, le x dans function(x) log(1+x) correspond au
 nombre d’observation d’un ASV, le 1 permet d’eviter d’avoir une erreur
@@ -675,7 +675,7 @@ qplot(rel_abund[, 12], geom = "histogram",binwidth=0.05) +
   xlab("Relative abundance")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
 Pour chaque x on divise par la somme. On calcule l’abondance relative
 pour chaque ASV.
@@ -715,7 +715,7 @@ plot_ordination(pslog, out.pcoa.log, color = "age_binned",
   coord_fixed(sqrt(evals[2] / evals[1]))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 Ici on fait une PcoA en utilisant la distance de Bray-Curtis de l’objet
 pslog. On peut voir qu’il y a un effet d’age assez important qui est
@@ -732,7 +732,7 @@ plot_ordination(pslog, out.dpcoa.log, color = "age_binned", label= "SampleID",
   coord_fixed(sqrt(evals[2] / evals[1]))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
 
 Ici nous faisons une double PCoA, réalisé par la fonction
 ordination(pslog, methode =“DPCoA”) Les échantillons ayant un score
@@ -744,7 +744,7 @@ plot_ordination(pslog, out.dpcoa.log, type = "species", color = "Phylum") +
   coord_fixed(sqrt(evals[2] / evals[1]))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
 Ici nous faisons un graphique des objets pslog et de out.dpcoa.log en
 colorant chaque points en fonction de son phylum correspondant.
@@ -766,7 +766,7 @@ plot_ordination(pslog, out.wuf.log, color = "age_binned",
   labs(col = "Binned Age", shape = "Litter")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
 
 Le deuxième axe est associé à un effet d’âge assez similaire au DPCoA.
 Cependant lorsqu’on compare le biplot, DPCoA a donné une interprétation
@@ -870,7 +870,7 @@ ggplot(abund_df %>%
   scale_color_brewer(palette = "Set2")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
 Ici on réalise une analyse en composante principale. L’axe des abscisses
 est représenté par l’abondance et l’axe des ordonnées par les rangs
@@ -939,7 +939,7 @@ ggplot() +
   theme(panel.border = element_rect(color = "#787878", fill = alpha("white", 0)))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 On onbtient 3 graphiques (young100, Mid100to200 and old200). Les même
 résultats que la PCoA précédente, l’abondance est différnte en fonction
@@ -1001,7 +1001,7 @@ ggplot() +
   theme(panel.border = element_rect(color = "#787878", fill = alpha("white", 0)))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
 
 Ici nous avons 2 graphiques (litter1 et litter2). Sur les 23 taxons,
 seulement les 4 les plus abondantes ont été annotés.
@@ -1138,7 +1138,7 @@ ggplot() +
   theme(panel.border = element_rect(color = "#787878", fill = alpha("white", 0)))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-57-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-57-1.png)<!-- -->
 
 Ici on observe également que la ditribution des phyllum est différente
 selon l’age des souris.
@@ -1156,7 +1156,7 @@ ggplot(rf_prox) +
   labs(col = "Binned Age", x = "Axis1", y = "Axis2")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
 
 La fonction cmdscale permet la mise a l’échelle multidimensionnelle
 classique d’une matrice de donnée. Une distance est calculée ente les
@@ -1185,7 +1185,7 @@ ggplot(maxImpDF) +   geom_histogram(aes(x = abund)) +
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-60-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-60-1.png)<!-- -->
 
 Sur ce graphique nous pouvons voir l’abondance de ce microbe dans les
 échantillons, on voit qu’il est très peu abondant de 0 à 100 jours et
@@ -1268,7 +1268,7 @@ ggplot(net_graph, aes(x = x, y = y, xend = xend, yend = yend), layout = "fruchte
   guides(col = guide_legend(override.aes = list(size = .5)))
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
 
 Pour la création de se réseau, l’indice de Jaccard a été utilié. La
 fonction make\_network permet de créer un réseau de microbiome par
@@ -1321,7 +1321,7 @@ plotPerm1=plot_permutations(gt)
 grid.arrange(ncol = 2,  plotNet1, plotPerm1)
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
 
 On peut voir ici que les échantillons se regroupe bien par portée.
 
@@ -1342,7 +1342,7 @@ plotPerm2=plot_permutations(gt)
 grid.arrange(ncol = 2,  plotNet2, plotPerm2)
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
 
 Ce graphique permet de voir si les échantillons sont proches de leurs
 voisins, si c’est le cas cela signifie qu’ils sont issue de la même
@@ -1441,7 +1441,7 @@ ggplot(ps_samp %>% left_join(new_data)) +
 
     ## Joining, by = c("host_subject_id", "age_binned")
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-70-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-70-1.png)<!-- -->
 
 Sur ces graphique on peut voir que les souris les plus jeunes ont des
 diversité de shannone assez faible.
@@ -1595,7 +1595,7 @@ ggplot(abund_sums) +
   xlab("Total abundance within sample")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-73-1.png)<!-- -->
 
 La fonction rbind permet la fusion de 2 ou plusieurs sparkDataFrames par
 lignes.
@@ -1858,7 +1858,7 @@ ggplot() +  geom_point(data = sample_info,
        fill = "Feature Type", col = "Sample Type")
 ```
 
-![](03_stat_analysis_files/figure-gfm/unnamed-chunk-86-1.png)<!-- -->
+![](03_phyloseq_analysis_files/figure-gfm/unnamed-chunk-86-1.png)<!-- -->
 
 Cette figure montre un triplot de PCA ou on peut voir différents types
 d’échantillons et les caractéristiques multidomaines (métabolites et
