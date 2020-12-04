@@ -1373,7 +1373,7 @@ library("nlme")
 
     ## The following object is masked from 'package:IRanges':
     ## 
-    ##     collapse
+    ##     collapse 
 
 ``` r
 library("reshape2")
@@ -1766,9 +1766,7 @@ dim(X)
 
     ## [1] 174  12
 
-la fonction rowsum permet de faire la sommes des colones sur les lignes
-d’un objet de type matrice. La fonction filter\_taxa permet de filter
-les taxons en fonctino des critères d’abondances de l’OTU dans
+la fonction rowsum permet de faire la sommes des colonnes sur les lignes
 l’ensemble de l’échantillon. La fonction prune\_taxa permet d’éliminer
 les OTU ou les taxons indésrable d’un objet phylogénétique.
 
