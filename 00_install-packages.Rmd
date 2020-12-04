@@ -28,8 +28,10 @@ BiocManager::install("phangorn")
 BiocManager::install("DECIPHER")
 BiocManager::install("DESseq2")
 BiocManager::install("ggplot2", version = "3.11")
+BiocManager::install("phyloseq", version = "3.11")
 ```
 
+## Pour l'arbre phylogénétique - phyloseq
 ```{r}
 install.packages("gridExtra")
 ```
